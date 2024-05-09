@@ -1,6 +1,6 @@
-# Obelix - Asynchronous Data Acquisition
+# pydatacq - Asynchronous Data Acquisition
 
-With Obelix you can collect data from a series of instruments. The drivers for specific instruments can be injected into the library. A driver for the SDS series of oscilloscopes from Siglent are included.
+With pydatacq you can collect data from a series of instruments. The drivers for specific instruments can be injected into the library. A driver for the SDS series of oscilloscopes from Siglent are included.
 
 Data is acquired in an asynchronous way. Data collection is not blocking. So several instruments can be sampled at the same time, as well as calcuulation, display, storing etc of the sampled data.
 
