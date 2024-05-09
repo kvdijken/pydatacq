@@ -172,18 +172,17 @@ class SDS(Siglent):
         wait = T * 4
         now = time()
 
-        if True:
-            if self._wavetime is not None:
-                # decide how long ago it was the last waveform
-                # was acquired. Wait more until it was 'wait'
-                # seconds ago to let the oscilloscope acquire
-                # a new waveform.
-                passed = now - self._wavetime
-                if passed < wait:
-                    sleep = wait - passed
+        if self._wavetime is not None:
+            # decide how long ago it was the last waveform
+            # was acquired. Wait more until it was 'wait'
+            # seconds ago to let the oscilloscope acquire
+            # a new waveform.
+            passed = now - self._wavetime
+            if passed < wait:
+                sleep = wait - passed
 #                    print(f'{asctime()}: sleep {sleep}')
-                    await asyncio.sleep(sleep)
-            self._wavetime = now
+                await asyncio.sleep(sleep)
+        self._wavetime = now
 
         # Get wave
         wave = await self.async_query_rawwave(channel)
