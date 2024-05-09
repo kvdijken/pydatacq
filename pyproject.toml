@@ -1,0 +1,23 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pydatacq"
+version = "0.1.0"
+authors = [
+  { name="kvdijken", email="sla_nippers_0x@icloud.com" },
+]
+dependencies = ["numpy","scipy","uvloop","matplotlib","quantiphy"]
+
+description = "A package for asynchronous data acquisition"
+readme = "README.md"
+requires-python = ">=3.11"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.optional-dependencies]
+
