@@ -181,7 +181,7 @@ class SDS(Siglent):
                 passed = now - self._wavetime
                 if passed < wait:
                     sleep = wait - passed
-                    print(f'{asctime()}: sleep {sleep}')
+#                    print(f'{asctime()}: sleep {sleep}')
                     await asyncio.sleep(sleep)
             self._wavetime = now
 
