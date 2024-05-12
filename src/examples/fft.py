@@ -6,12 +6,10 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import quantiphy as q
+from pydatacq import SDS, LiveSDS, LiveWindow
 
-from sds import SDS
 import fft_calculations
 from fft_calculations import fft
-from live_sds import LiveSDS
-from live_window import LiveWindow
 import matplotlib_rc
 
 live_sds = None

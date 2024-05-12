@@ -8,7 +8,7 @@ from scipy.fft import rfft, rfftfreq
 from scipy.signal.windows import flattop
 import quantiphy as q
 
-from siglent import Siglent
+from .siglent import Siglent
 
 
 CH = ['C1','C2']

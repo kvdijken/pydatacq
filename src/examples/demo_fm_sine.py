@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from pydatacq import LiveWindow
 
 from live_fm_sine import LiveFMSine
-from live_window import LiveWindow
 
 plt.rcParams['toolbar'] = 'None'
 

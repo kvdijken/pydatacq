@@ -1,5 +1,5 @@
-from sds import SDS
-from pydatacq import LiveData
+from .sds import SDS
+from .live_data import LiveData
 
 
 #

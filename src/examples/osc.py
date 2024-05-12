@@ -6,12 +6,10 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import quantiphy as q
+from pydatacq import SDS, LiveSDS, LiveWindow
 
-from sds import SDS
 import fft_calculations
 from fft_calculations import V_to_Vrms, Vrms_to_dBVrms, fft, thd
-from live_sds import LiveSDS
-from live_window import LiveWindow
 import matplotlib_rc
 
 asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
