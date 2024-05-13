@@ -4,7 +4,7 @@ With pydatacq you can collect data from a series of instruments. The drivers for
 
 Data is acquired in an asynchronous way. Data collection is not blocking. So several instruments can be sampled at the same time, as well as calcuulation, display, storing etc of the sampled data.
 
-Some demo progams (fft,thd,oscilloscope) are included in the package as well.
+Some demo progams (fft,thd,oscilloscope) are available in the src/examples folder.
 
 Short screen captures of sampling data and displaying them in a matplotlib window are present in the /resources folder.
 
