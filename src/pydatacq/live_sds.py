@@ -75,7 +75,7 @@ class LiveSDS(LiveData):
         Yields the next channel for which to retrieve data.
         It cycles through all the channels in self.channels.
         '''
-        while super()._go_on:
+        while self._go_on:
             for ch in self.channels:
                 yield ch
         yield None

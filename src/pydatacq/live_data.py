@@ -37,13 +37,6 @@ class LiveData(ABC):
     instantiation of the class.
     '''
 
-    _go_on = True
-    __updates = 0
-
-    # interval for fps display
-    __fps_interval = 1 # seconds
-    __consumer_cb = None
-
     #
     def __init__(self,consumer_cb,id=None,fps=False,queue_maxsize=1,
                  timestamp=False,use_uvloop=True,yields=True):
@@ -85,6 +78,9 @@ class LiveData(ABC):
         self.__consumer_cb = consumer_cb
         if use_uvloop:
             asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+        self.__fps_interval = 1
+        self.__updates = 0
+        self._go_on = True
         self.__fps = fps
         self.__queue_maxsize = queue_maxsize
         self.__timestamp = timestamp

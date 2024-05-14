@@ -14,9 +14,6 @@ class LiveWindow():
     where they will be shown by blitting.
     '''
 
-    fig = None
-    ax = None
-
     #
     def __init__(self,windowTitle=None,plotTitle=None,onclose_cb=None):
         '''

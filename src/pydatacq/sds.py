@@ -99,8 +99,12 @@ class SDS(Siglent):
     which can be downloaded from https://www.siglent.com/upload_file/document/SDS1000%20Series&SDS2000X&SDS2000X-E_ProgrammingGuide_PG01-E02D.pdf
     '''
 
-    _divisions = 14
-    _channel = 0
+
+    # 
+    def __init__(self,ip,port):
+        self._divisions = 14
+        super().__init__(ip,port)
+
 
     # This translates the display value (-127..128) to a voltage.
     def _toV(self,x,vgain,voffset,probe_att):
