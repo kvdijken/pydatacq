@@ -1,7 +1,7 @@
-import asyncio
 import numpy as np
 from scipy.fft import rfft, rfftfreq
 from scipy.signal.windows import flattop
+
 
 
 # x in V
