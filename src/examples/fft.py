@@ -1,6 +1,5 @@
 import argparse
 import builtins
-import asyncio
 
 import numpy as np
 import matplotlib as mpl
