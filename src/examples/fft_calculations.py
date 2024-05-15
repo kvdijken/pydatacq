@@ -143,8 +143,6 @@ def _bin(array,value):
 # note that the returned yf is not in dB
 # thd in %
 # bins: indices in xf for harmonics
-#
-# channel = 0 | 1
 def thd(fft,f0,correct_peaks=False,min_level=None):
     """
     Calculates THD (total harmonic distortion, in %) of a waveform
@@ -155,6 +153,7 @@ def thd(fft,f0,correct_peaks=False,min_level=None):
     Parameters:
 
     fft : (xf,yf) xf = frequency bins, yf = voltage
+    f0 : fundamental frequency (in Hz)
     correct_peaks : If correct_peaks == True will correct harmonics bins if
                     directly neighbouring bins have higher signal level (default=False).
     min_level : minimum signal level (in dBV) for harmonics to be included in the
