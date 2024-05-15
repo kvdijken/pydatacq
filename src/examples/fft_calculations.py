@@ -49,8 +49,6 @@ def frequency_window(fft,centre,span):
 
 
 # returns f, v (dB)
-# channel = 0 | 1
-# output = 'dBVrms' | 'dBV' | 'V'
 def fft(wave, max_f=None, output='dBVrms'):
     '''
     Calculates the Fast Fourier Transform of a waveform obtained from the oscilloscope.
@@ -58,8 +56,8 @@ def fft(wave, max_f=None, output='dBVrms'):
 
     Parameters:
 
-    channel : the channel to obtain the waveform for, either 0 (for channel 1)
-                or 1 (for channel 2).
+    wave : tuple (t,v) where t is an array with time, and v
+           is an array of values at time t.
     max_f : maximum frequency (in Hz) of the specturm to return. 
             If None, the complete spectrum will be returned.
     output : Determines in what format the result yf of the fft will be returned.
