@@ -1,11 +1,17 @@
 import asyncio
+import traceback
+import socket
+import time
+
 
 class Siglent():
 
+    b_term = b'\r\n'
+    
     # 
     def __init__(self,ip,port,wait=0):
         self.ip = ip
-        self.port = port
+        self.port = int(port)
         self._wait = wait
 
 
@@ -26,10 +32,9 @@ class Siglent():
         Returns the data in the format as defined by the device.
         '''
         reader, writer = await asyncio.open_connection(self.ip,self.port)
-
         try:
             b_cmd = bytes(cmd,'ascii')
-            writer.write(b_cmd + b'\n')
+            writer.write(b_cmd + self.b_term)
             await writer.drain()
             data = await reader.read(size)
         finally:
@@ -85,8 +90,10 @@ class Siglent():
         cmd : (str) command to be sent to the device.
         '''
         _, writer = await asyncio.open_connection(self.ip,self.port)
-        b_cmd = bytes(cmd,'ascii')
-        writer.write(b_cmd + b'\n')
+        # b_cmd = bytes(cmd,'ascii')
+        # writer.write(b_cmd + self.b_term)
+        b_cmd = bytes(cmd + self.b_term,'ascii')
+        writer.write(b_cmd)
         await writer.drain()
         writer.close()
         await writer.wait_closed()
@@ -98,9 +105,24 @@ class Siglent():
     def send(self,cmd):
         '''
         Synchronously sends a command to the device.
+        This method communicates synchronously
+        over sockets and may be used when an
+        asyncio event loop is running.
 
         Parameters:
 
         cmd : (str) command to be sent to the device.
         '''
-        asyncio.run(self.async_send(cmd))
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as _sock:
+                _sock.connect((self.ip,self.port))
+                _sock.setblocking(True)
+                b_cmd = bytes(cmd,'ascii')
+                _sock.sendall(b_cmd + self.b_term)
+                _sock.close()
+                if self._wait > 0:
+                    time.sleep(self._wait)
+        except:
+            traceback.print_exc()
+            
+

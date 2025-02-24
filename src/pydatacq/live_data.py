@@ -145,9 +145,9 @@ class LiveData(ABC):
             # put data in queue
             if data is not None:
                 if self.__timestamp:
-                    await queue.put(asctime(),data)
+                    queue.put_nowait(asctime(),data)
                 else:
-                    await queue.put(data)
+                    queue.put_nowait(data)
             
 
     # consumes waveforms obtained from the queue
