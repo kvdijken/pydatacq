@@ -98,6 +98,12 @@ class LiveData(ABC):
     
 
     #
+    async def async_start(self):
+        self._go_on = True
+        await self._loop()
+        
+        
+    #
     def stop(self):
         '''
         Stops the data acquisition.

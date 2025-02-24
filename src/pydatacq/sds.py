@@ -191,7 +191,6 @@ class SDS(Siglent):
         # Get wave
         wave = await self.async_query_rawwave(channel)
         w = np.frombuffer(wave,dtype=np.int8)
-        w = np.where(w>127, w-256, w)
 
         # Get VDIV
         cmd = f'{CH[channel]}:VDIV?'

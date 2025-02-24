@@ -3,9 +3,10 @@ import asyncio
 class Siglent():
 
     # 
-    def __init__(self,ip,port):
+    def __init__(self,ip,port,wait=0):
         self.ip = ip
         self.port = port
+        self._wait = wait
 
 
     # 
@@ -34,6 +35,8 @@ class Siglent():
         finally:
             writer.close()
             await writer.wait_closed()
+            if self._wait > 0:
+                await asyncio.sleep(self._wait)
         return data
 
 
@@ -64,6 +67,7 @@ class Siglent():
         
         cmd : (str) command to be sent to the device.
         
+        
         Returns:
         
         The string (str) returned from the device.
@@ -86,6 +90,8 @@ class Siglent():
         await writer.drain()
         writer.close()
         await writer.wait_closed()
+        if self._wait > 0:
+            await asyncio.sleep(self._wait)
 
 
     # 
