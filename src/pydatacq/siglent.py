@@ -125,4 +125,3 @@ class Siglent():
         except:
             traceback.print_exc()
             
-

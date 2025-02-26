@@ -87,6 +87,36 @@ _tbase_lookup = ['200PS',
                 '50S',
                 '100S']
 
+vdiv_lookup = np.array([500e-6,
+               1e-3,
+               2e-3,
+               5e-3,
+               10e-3,
+               20e-3,
+               50e-3,
+               100e-3,
+               200e-3,
+               500e-3,
+               1,
+               2,
+               5,
+               10])
+
+_vdiv_lookup = ['500uV',
+               '1mV',
+               '2mV',
+               '5mV',
+               '10mV',
+               '20mV',
+               '50mV',
+               '100mV',
+               '200mV',
+               '500mV',
+               '1V',
+               '2V',
+               '5V',
+               '10V']
+
 
 class SDS(Siglent):
     '''
@@ -202,9 +232,10 @@ class SDS(Siglent):
         response = await self.async_query(cmd)
         offs = float(response[8:-2])
 
+        # see: Siglent's Programming Guide PG01-E02D, p.265
         v = w * vdiv / 25 - offs
 
-        return v, timebase*self._divisions
+        return v, timebase*self._divisions,vdiv, offs
 
 
 
@@ -217,17 +248,17 @@ class SDS(Siglent):
 
         Parameters:
 
-        channel : the channel for which to obtain the waveform from (0 or 1).
+        channel : the channel from which to obtain the waveform (0 or 1).
 
         Returns:
         t : numpy array with sample time, starting at 0 (in seconds)
         V : numpy array with voltage on time t (in V).
         '''
-        y, Tmax = await self.async_getwave(channel)
+        y, Tmax, vdiv, offs = await self.async_getwave(channel)
         if y is None:
             return None
         t = np.linspace(0,Tmax,y.size,endpoint=False)
-        return t, y
+        return t, y, vdiv, offs
 
 
     # Sets the oscilloscopes timebase
@@ -268,7 +299,48 @@ class SDS(Siglent):
         '''
         # Find first timebase in tbase_lookup which is larger than 'secs'
         tb = np.where(tbase_lookup > secs_per_div)[0][0]
-        self.setTimebase(tb)
+        self.setTimebase(int(tb))
+
+
+    # Sets the oscilloscopes timebase
+    # tb is an index in tbase_lookup
+    async def async_setTimebase(self,tb):
+        '''
+        Set the osciloscope timebase.
+
+        Parameters:
+
+        tb : (int | str) If int, tb is index into tbase_lookup for the time / horizontal division.
+             If str, tb must be one of the strings in _tbase_lookup
+
+        Returns:
+
+        None
+        '''
+        if type(tb) == int:
+            # lookup and convert to str
+            tb = _tbase_lookup[tb]
+        cmd = f'TDIV {tb}'
+        await self.async_send(cmd)
+
+
+    # Set the timebase to the first value larger than secs_per_div
+    async def async_setTimebaseAtLeast(self,secs_per_div):
+        '''
+        Set the oscilloscopes timebase to secs_per_div or the next 
+        available larger timebase.
+
+        Parameters:
+
+        secs_per_div : minimal timebase per horizontal division (in seconds)
+
+        Returns:
+
+        None
+        '''
+        # Find first timebase in tbase_lookup which is larger than 'secs'
+        tb = np.where(tbase_lookup > secs_per_div)[0][0]
+        await self.async_setTimebase(int(tb))
 
 
     # Returns the number of horizontal divisions
@@ -620,7 +692,47 @@ class SDS(Siglent):
             case 'text':
                 return tupleToText(tb, ch1, ch2, mem, acq)
     
-
+    #
+    def setVDiv(self,ch,vdiv,grid:str):
+        '''
+        Sets the vertical scale, the volts per division.
+        
+        Parameters:
+        ch: zero-based channel
+        grid:   'nextlower' chooses the next lower coarse vdiv setting
+                'nexthigher' chooses the next higher coarse vdiv setting
+                'closest': choose the closest to vdiv coarse vdiv setting
+                'exact' sets the vdiv setting to the exact vdiv value
+        '''
+        _diff = np.absolute(vdiv_lookup-vdiv)
+        if grid == 'nextlower':
+            _vdiv_idx = np.argmin(_diff) - 1
+            _vgain = _vdiv_lookup[_vdiv_idx]
+        elif grid == 'nexthigher':
+            _vdiv_idx = np.argmin(_diff) + 1
+            _vgain = _vdiv_lookup[_vdiv_idx]
+        elif grid == 'closest':
+            _vdiv_idx = np.argmin(_diff)
+            _vgain = _vdiv_lookup[_vdiv_idx]
+        elif grid == 'exact':
+            _vgain = q.Quantity(vdiv).render(form='si',show_units=False) + 'V'            
+            pass
+        else:
+            return
+        cmd = f'{CH[ch]}:VDIV {_vgain}'
+        self.send(cmd)
+    
+    #
+    def setOffset(self,ch,offset):
+        '''
+        Parameters:
+        ch: zero-based channel
+        '''
+        _voffs = q.Quantity(offset).render(form='si',show_units=False) + 'V' 
+        cmd = f'{CH[ch]}:OFST {_voffs}'
+        self.send(cmd)
+    
+    
     def stop(self):
         '''
         Stops the acquisition of the oscilloscope. Note that a
@@ -635,7 +747,6 @@ class SDS(Siglent):
 
         None
         '''
-
         cmd = 'STOP'
         self.send(cmd)
 
