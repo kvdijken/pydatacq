@@ -94,7 +94,11 @@ class LiveData(ABC):
         Starts the data acquisition.
         '''
         self._go_on = True
-        asyncio.run(self._loop())
+        if asyncio.get_event_loop().is_running():
+            task = asyncio.create_task(self._loop())
+            self.tasks.append(task)
+        else:
+            asyncio.run(self._loop())
     
 
     #
